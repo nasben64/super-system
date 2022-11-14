@@ -20,14 +20,16 @@ afterAll(() => {
 });
 
 describe("3. GET /api/categories", () => {
-  test("GET : 200,  get all categories", () => {
+  test("GET : 200,  get all categories should return all category objects ", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
       .then((res) => {
-        expect(res.body[0]).toMatchObject({
-          slug: expect.any(String),
-          description: expect.any(String),
+        res.body.forEach((element) => {
+          expect(element).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
         });
       });
   });

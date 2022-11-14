@@ -6,7 +6,6 @@ exports.getAllCategories = (req, res, next) => {
       res.status(200).send(categories);
     })
     .catch((err) => {
-      console.log("controller error", err);
       next(err);
     });
 };
