@@ -7,8 +7,13 @@ app.get("/api/categories", getAllCategories);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
-  //next(err);
 });
+
+// app.use((err, req, res, next) => {
+//   console.log("inside the error handler");
+//   res.status(404).send({ msg: "Path not found" });
+//   next(err);
+// });
 
 app.use((err, req, res, next) => {
   res.sendStatus(500);
