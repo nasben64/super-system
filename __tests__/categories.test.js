@@ -39,7 +39,7 @@ describe("3. GET /api/categories", () => {
         expect(res.body.length).toBe(4);
       });
   });
-  test("GET : 200,  returns not found when sent invalid endpoint", () => {
+  test("GET : 404,  returns not found when sent invalid endpoint", () => {
     return request(app)
       .get("/api/categorie")
       .expect(404)
