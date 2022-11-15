@@ -94,7 +94,6 @@ describe("4. GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        console.log(body, "the review body from the test");
         expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });

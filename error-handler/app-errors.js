@@ -18,6 +18,9 @@ exports.apiCustomError = (err, req, res, next) => {
   });
 };
 
+// this error handler will be called as the last in
+// the app.js to catch any an unexpected errors including
+// server errors
 exports.catchAllErrors = (err, req, res, next) => {
   console.log(err, "error coming from app.use");
   res.sendStatus(500);
