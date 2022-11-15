@@ -6,3 +6,5 @@ exports.selectAllCategories = () => {
     return result.rows;
   });
 };
+
+
