@@ -17,9 +17,9 @@ describe("3. GET /api/categories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then((res) => {
-        res.body.forEach((element) => {
-          expect(element).toMatchObject({
+      .then(({ body }) => {
+        body.categories.forEach((category) => {
+          expect(category).toMatchObject({
             slug: expect.any(String),
             description: expect.any(String),
           });
@@ -30,8 +30,8 @@ describe("3. GET /api/categories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then((res) => {
-        expect(res.body.length).toBe(4);
+      .then(({ body }) => {
+        expect(body.categories).toHaveLength(4);
       });
   });
   test("GET : 404,  returns not found when sent invalid endpoint", () => {
@@ -50,8 +50,8 @@ describe("4. GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        body.forEach((element) => {
-          expect(element).toMatchObject({
+        body.reviews.forEach((review) => {
+          expect(review).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
             category: expect.any(String),
@@ -70,8 +70,8 @@ describe("4. GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        body.forEach((element) => {
-          expect(element).toMatchObject({
+        body.reviews.forEach((review) => {
+          expect(review).toMatchObject({
             owner: expect.any(String),
           });
         });
@@ -82,7 +82,7 @@ describe("4. GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        body.forEach((review) => {
+        body.reviews.forEach((review) => {
           if (review.review_id === 2 || review.review_id === 3) {
             expect(review.comment_count).toBe("3");
           }
@@ -94,7 +94,7 @@ describe("4. GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toBeSortedBy("created_at", { descending: true });
+        expect(body.reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("GET : 404,  returns not found when sent invalid endpoint", () => {
