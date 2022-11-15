@@ -1,22 +1,22 @@
 const express = require("express");
 const { getAllCategories } = require("./controllers/categories");
+const { getAllReviews } = require("./controllers/reviews");
+const {
+  pathNotFoundError,
+  apiCustomError,
+  catchAllErrors,
+} = require("./error-handler/app-errors");
 
 const app = express();
 
 app.get("/api/categories", getAllCategories);
 
-app.all("/*", (req, res) => {
-  res.status(404).send({ msg: "Path not found" });
-});
+app.get("/api/reviews", getAllReviews);
 
-// app.use((err, req, res, next) => {
-//   console.log("inside the error handler");
-//   res.status(404).send({ msg: "Path not found" });
-//   next(err);
-// });
+app.use(pathNotFoundError);
 
-app.use((err, req, res, next) => {
-  res.sendStatus(500);
-});
+app.use(apiCustomError);
+
+app.use(catchAllErrors);
 
 module.exports = app;
