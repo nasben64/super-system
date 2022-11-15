@@ -12,10 +12,14 @@ exports.pathNotFoundError = (req, res, next) => {
 // this error handler will handle all of the
 // error coming from the endpoints
 exports.apiCustomError = (err, req, res, next) => {
-  res.status(err.status || 500).send({
-    status: err.status || 500,
-    msg: err.message,
-  });
+  if (err.status && err.message) {
+    res.status(err.status || 500).send({
+      status: err.status || 500,
+      msg: err.message,
+    });
+  } else {
+    next(err);
+  }
 };
 
 // this error handler will be called as the last in
@@ -23,5 +27,9 @@ exports.apiCustomError = (err, req, res, next) => {
 // server errors
 exports.catchAllErrors = (err, req, res, next) => {
   //console.log(err, "error coming from app.use");
-  res.sendStatus(500);
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad Request" });
+  } else {
+    res.sendStatus(500);
+  }
 };
