@@ -153,3 +153,55 @@ describe("5. GET /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("6. GET /api/reviews/:review_id/comments", () => {
+  test("GET-200 returns an array of comments object for the passed review_id and check that the passed review_id is returned with the object", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          });
+        });
+      });
+  });
+  test("GET-200 return the comments object sorted in a descending order", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET- 404 sends comment does not exist error message when given a valid but non-existent id in the comments table", () => {
+    return request(app)
+      .get("/api/reviews/9/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comment does not exist");
+      });
+  });
+  test("GET-400 sends Bad Request error message when given an invalid id (i.e. abc)", () => {
+    return request(app)
+      .get("/api/reviews/abc/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("GET- 404 sends review not found! when the there is no review matches the review_id passed", () => {
+    return request(app)
+      .get("/api/reviews/99/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review not found!");
+      });
+  });
+});
