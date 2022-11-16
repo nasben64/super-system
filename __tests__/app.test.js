@@ -197,6 +197,7 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
       });
   });
   test("GET- 404 sends review not found! when the there is no review matches the review_id passed", () => {
+    // test for the review exists
     return request(app)
       .get("/api/reviews/99/comments")
       .expect(404)

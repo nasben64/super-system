@@ -2,6 +2,7 @@ const db = require("../db/connection");
 const { checkReviewExists } = require("../utils/utils");
 
 exports.selectCommentsByReviewId = (review_id) => {
+  // check if the review already exists
   return checkReviewExists(review_id)
     .then(() => {
       const queryStr = `SELECT * 

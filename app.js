@@ -16,6 +16,7 @@ app.get("/api/reviews", getAllReviews);
 
 app.get("/api/reviews/:review_id", getReviewById);
 
+// set the api endpoint
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.use(pathNotFoundError);

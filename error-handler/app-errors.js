@@ -27,6 +27,7 @@ exports.apiCustomError = (err, req, res, next) => {
 // server errors
 exports.catchAllErrors = (err, req, res, next) => {
   //console.log(err, "error coming from app.use");
+  // check for the server error code '22P02'
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else {
