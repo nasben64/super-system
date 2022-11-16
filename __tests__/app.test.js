@@ -180,12 +180,13 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
         expect(body.comments).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("GET- 404 sends comment does not exist error message when given a valid but non-existent id in the comments table", () => {
+  test("GET- 200 returns an empty array when given a valid but non-existent id in the comments table", () => {
     return request(app)
       .get("/api/reviews/9/comments")
-      .expect(404)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("comment does not exist");
+        console.log(body, "inside the model");
+        expect(body.comments).toEqual([]);
       });
   });
   test("GET-400 sends Bad Request error message when given an invalid id (i.e. abc)", () => {
