@@ -39,3 +39,15 @@ This end point returns a review object for a given review_id with the following 
 - created_at
 - votes
 - designer
+
+# GET /api/reviews/:review_id/comments
+
+This end point returns an array of comments object for a given review_id and should have the following properties:
+
+- comment_id
+- votes
+- created_at
+- author
+- body
+- review_id
+  The comments array of objects will be sorted by the created_at in a desending order.

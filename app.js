@@ -1,5 +1,6 @@
 const express = require("express");
 const { getAllCategories } = require("./controllers/categories");
+const { getCommentsByReviewId } = require("./controllers/comments");
 const { getAllReviews, getReviewById } = require("./controllers/reviews");
 const {
   pathNotFoundError,
@@ -14,6 +15,8 @@ app.get("/api/categories", getAllCategories);
 app.get("/api/reviews", getAllReviews);
 
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.use(pathNotFoundError);
 
