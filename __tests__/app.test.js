@@ -342,3 +342,36 @@ describe("8. PATCH /api/reviews/:review_id", () => {
       });
   });
 });
+describe("9. GET /api/users", () => {
+  test("GET: 200, returns an array of reviews objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET : 200,  return a length of 4", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+      });
+  });
+  test("GET : 404,  returns not found when sent invalid endpoint", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then(({ body }) => {
+        console.log("inside the test", body);
+        expect(body.msg).toBe("Path not found");
+      });
+  });
+});
