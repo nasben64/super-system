@@ -4,7 +4,11 @@ const {
   getCommentsByReviewId,
   postCommentByReviewId,
 } = require("./controllers/comments");
-const { getAllReviews, getReviewById } = require("./controllers/reviews");
+const {
+  getAllReviews,
+  getReviewById,
+  patchReviewById,
+} = require("./controllers/reviews");
 const {
   pathNotFoundError,
   apiCustomError,
@@ -23,6 +27,8 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
+
+app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.use(pathNotFoundError);
 
