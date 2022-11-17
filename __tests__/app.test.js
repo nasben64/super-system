@@ -185,7 +185,6 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/9/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log(body, "inside the model");
         expect(body.comments).toEqual([]);
       });
   });
@@ -204,6 +203,59 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("review not found!");
+      });
+  });
+});
+
+describe("7. POST /api/reviews/:review_id/comments", () => {
+  test("POST - 201 should return the new comment", () => {
+    const newComment = {
+      body: "Great game enjoyed by all the family aged 4 to 68",
+      author: "dav3rid",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({ comment_id: 7, ...newComment });
+      });
+  });
+  test("GET- 404 sends review not found! when the there is no review matches the review_id passed", () => {
+    const newComment = {
+      body: "Great game enjoyed by all the family aged 4 to 68",
+      author: "dav3rid",
+    };
+    return request(app)
+      .post("/api/reviews/99/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review not found!");
+      });
+  });
+  test("POST:400 responds with an appropriate error message when provided with no 'body'", () => {
+    const newComment = {
+      author: "dav3rid",
+    };
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("POST:400 responds with an appropriate error message when provided with no 'username'", () => {
+    const newComment = {
+      body: "Great game enjoyed by all the family aged 4 to 68",
+    };
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
       });
   });
 });
