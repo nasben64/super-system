@@ -54,7 +54,7 @@ This end point returns an array of comments object for a given review_id and sho
 
 # 7) POST /api/reviews/:review_id/comments
 
-This end point updates the comments table by passing an object with the following properites
+This end point inserts new comment to the comments table by passing an object with the following properites
 
 - username which is the auther
 - body

@@ -211,20 +211,27 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
   test("POST - 201 should return the new comment", () => {
     const newComment = {
       body: "Great game enjoyed by all the family aged 4 to 68",
-      author: "dav3rid",
+      username: "dav3rid",
     };
     return request(app)
       .post("/api/reviews/6/comments")
       .send(newComment)
       .expect(201)
       .then(({ body }) => {
-        expect(body.comment).toMatchObject({ comment_id: 7, ...newComment });
+        expect(body.comment).toMatchObject({
+          comment_id: 7,
+          review_id: 6,
+          author: "dav3rid",
+          votes: expect.any(Number),
+          body: expect.any(String),
+          created_at: expect.any(String),
+        });
       });
   });
   test("GET- 404 sends review not found! when the there is no review matches the review_id passed", () => {
     const newComment = {
       body: "Great game enjoyed by all the family aged 4 to 68",
-      author: "dav3rid",
+      username: "dav3rid",
     };
     return request(app)
       .post("/api/reviews/99/comments")
@@ -236,7 +243,7 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
   });
   test("POST:400 responds with an appropriate error message when provided with no 'body'", () => {
     const newComment = {
-      author: "dav3rid",
+      username: "dav3rid",
     };
     return request(app)
       .post("/api/reviews/2/comments")
@@ -256,6 +263,19 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("POST:404 responds with an appropriate error message when provided with incorrect username", () => {
+    const newComment = {
+      body: "Great game enjoyed by all the family aged 4 to 68",
+      username: "non-existent",
+    };
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("user not found!");
       });
   });
 });
