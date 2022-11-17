@@ -4,14 +4,14 @@ To run the project we need to setup the environment variables, so please create 
 .env.test which should have PGDATABASE= to point to the test database
 .env.development which should have PGDATABASE= to point to the development database
 
-# GET /api/categories
+# 3) GET /api/categories
 
 This end point will list you all of the categories as an array of objects with the properies of
 
 - slug
 - description
 
-# GET /api/reviews
+# 4) GET /api/reviews
 
 This end point with return an array of reviews objects with the following properies:
 
@@ -26,7 +26,7 @@ This end point with return an array of reviews objects with the following proper
 - comment_count which is the total counts of all commnts for a particular review_id
   Also the returned array of reviews is sorted by the created_at field in a descending order.
 
-# GET /api/reviews/:review_id
+# 5) GET /api/reviews/:review_id
 
 This end point returns a review object for a given review_id with the following properties
 
@@ -40,7 +40,7 @@ This end point returns a review object for a given review_id with the following 
 - votes
 - designer
 
-# GET /api/reviews/:review_id/comments
+# 6) GET /api/reviews/:review_id/comments
 
 This end point returns an array of comments object for a given review_id and should have the following properties:
 
@@ -51,3 +51,11 @@ This end point returns an array of comments object for a given review_id and sho
 - body
 - review_id
   The comments array of objects will be sorted by the created_at in a desending order.
+
+# 7) POST /api/reviews/:review_id/comments
+
+This end point inserts new comment to the comments table by passing an object with the following properites
+
+- username which is the auther
+- body
+  the response would be the newly added comment object

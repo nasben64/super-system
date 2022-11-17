@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { checkReviewExists } = require("../utils/utils");
+const { checkReviewExists, checkUserExists } = require("../utils/utils");
 
 exports.selectCommentsByReviewId = (review_id) => {
   return checkReviewExists(review_id)
@@ -12,5 +12,17 @@ exports.selectCommentsByReviewId = (review_id) => {
     })
     .then((result) => {
       return result.rows;
+    });
+};
+
+exports.createCommentByReviewId = (review_id, { body, username }) => {
+  return Promise.all([checkReviewExists(review_id), checkUserExists(username)])
+    .then(() => {
+      const queryStr = `INSERT INTO comments (body, author, review_id) 
+            VALUES ($1, $2, $3 ) RETURNING *;`;
+      return db.query(queryStr, [body, username, review_id]);
+    })
+    .then((result) => {
+      return result.rows[0];
     });
 };
