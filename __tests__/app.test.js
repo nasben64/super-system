@@ -279,3 +279,66 @@ describe("7. POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("8. PATCH /api/reviews/:review_id", () => {
+  test("PATCH - 200 returns the updated review object with the votes property updated to the correct value", () => {
+    const reviewObj = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(reviewObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review[0].votes).toBe(15);
+        expect(body.review[0]).toMatchObject({
+          review_id: 2,
+          title: expect.any(String),
+          category: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_body: expect.any(String),
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: 15,
+        });
+      });
+  });
+  test("PATCH - 200 should decrement the votes property when passed a nigetive number", () => {
+    const reviewObj = { inc_votes: -10 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(reviewObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review[0].votes).toBe(-5);
+      });
+  });
+  test("PATCH - 400 responds with inc_votes can not be undefined message when provided with no inc_vote value", () => {
+    const newComment = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("inc_votes can not be undefined");
+      });
+  });
+  test("PATCH - 404 sends review does not exist error message when given a valid but non-existent id", () => {
+    const newComment = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/reviews/99")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("review not found!");
+      });
+  });
+  test("PATCH:400 sends Bad Request error message when given an invalid inc_votes datatype ", () => {
+    const newComment = { inc_votes: "abc" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});

@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkReviewExists } = require("../utils/utils");
 
 exports.selectAllReviews = () => {
   const queryStr = `
@@ -33,4 +34,24 @@ exports.selectReviewById = (review_id) => {
     }
     return result.rows;
   });
+};
+
+exports.updateReviewById = (review_id, newVote) => {
+  if (newVote === undefined) {
+    return Promise.reject({
+      status: 400,
+      message: "inc_votes can not be undefined",
+    });
+  }
+  return checkReviewExists(review_id)
+    .then(() => {
+      const queryStr = `
+        UPDATE reviews
+        SET votes = votes + $1
+        WHERE review_id = $2 RETURNING*;`;
+      return db.query(queryStr, [newVote, review_id]);
+    })
+    .then((result) => {
+      return result.rows;
+    });
 };

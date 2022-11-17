@@ -1,4 +1,8 @@
-const { selectAllReviews, selectReviewById } = require("../models/reviews");
+const {
+  selectAllReviews,
+  selectReviewById,
+  updateReviewById,
+} = require("../models/reviews");
 
 exports.getAllReviews = (req, res, next) => {
   selectAllReviews()
@@ -20,4 +24,12 @@ exports.getReviewById = (req, res, next) => {
     });
 };
 
-
+exports.patchReviewById = (req, res, next) => {
+  const { review_id } = req.params;
+  const { inc_votes } = req.body;
+  updateReviewById(review_id, inc_votes)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch(next);
+};
