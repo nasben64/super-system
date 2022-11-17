@@ -45,8 +45,6 @@ exports.updateReviewById = (review_id, newVote) => {
   }
   return checkReviewExists(review_id)
     .then(() => {
-      console.log("inside the model");
-
       const queryStr = `
         UPDATE reviews
         SET votes = votes + $1

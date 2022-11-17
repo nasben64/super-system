@@ -331,4 +331,14 @@ describe("8. PATCH /api/reviews/:review_id", () => {
         expect(body.msg).toBe("review not found!");
       });
   });
+  test("PATCH:400 sends Bad Request error message when given an invalid inc_votes datatype ", () => {
+    const newComment = { inc_votes: "abc" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
 });
