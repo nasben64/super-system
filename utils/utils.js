@@ -21,3 +21,4 @@ exports.checkUserExists = (username) => {
     }
   });
 };
+

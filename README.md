@@ -73,6 +73,14 @@ This end point will list you all of the users as an array of objects with the pr
 - name
 - avatar_url
 
-# 10. GET /api/reviews/:review_id (comment count)
+# 10) GET /api/reviews/:review_id (comment count)
 
 this uses the same end point on ticket 5 but returns the comment_count property which is the total of the comments for the supplied review_id.
+
+# 11) GET /api/reviews (queries)
+
+The end point should also accept the following queries:
+
+- `category`, which selects the reviews by the category value specified in the query. If the query is omitted the endpoint should respond with all reviews.
+- `sort_by`, which sorts the articles by any valid column (defaults to date)
+- `order`, which can be set to `asc` or `desc` for ascending or descending (defaults to descending)

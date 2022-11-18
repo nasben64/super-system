@@ -33,6 +33,8 @@ app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.get("/api/users", getAllUsers);
 
+// Error midleware functions
+
 app.use(pathNotFoundError);
 
 app.use(apiCustomError);
