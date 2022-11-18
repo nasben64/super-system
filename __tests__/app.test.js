@@ -418,7 +418,7 @@ describe("10. GET /api/reviews/:review_id (comment count)", () => {
 describe("11. GET /api/reviews (queries)", () => {
   test("GET - 200 returns views object for the passed category.", () => {
     return request(app)
-      .get("/api/reviews?category='social deduction'")
+      .get("/api/reviews?category=social deduction")
       .expect(200)
       .then(({ body }) => {
         body.reviews.forEach((review) => {
@@ -457,6 +457,22 @@ describe("11. GET /api/reviews (queries)", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("invalid sort query!");
+      });
+  });
+  test("GET - 400 returns an error invalid order value when not passing ASC or DESC", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=designer&order=ABC")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid order value!");
+      });
+  });
+  test("200: returns an empty array when there are no reviews present for the queried category", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.reviews).toHaveLength(0);
       });
   });
 });

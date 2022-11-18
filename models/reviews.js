@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { checkReviewExists } = require("../utils/utils");
+const { checkReviewExists, checkCategoryExists } = require("../utils/utils");
 
 exports.selectAllReviews = (
   sort_by = "created_at",
@@ -21,9 +21,10 @@ exports.selectAllReviews = (
   if (order !== "DESC" && order !== "ASC") {
     return Promise.reject({ status: 400, message: "invalid order value!" });
   }
-
-  const queryValues = [];
-  let queryStr = `
+  return checkCategoryExists(category)
+    .then(() => {
+      const queryValues = [];
+      let queryStr = `
       SELECT r.review_id, r.title, r.owner,
       r.category, r.review_img_url,
       r.created_at, r.votes, r.designer, 
@@ -31,19 +32,21 @@ exports.selectAllReviews = (
       FROM reviews r
       LEFT JOIN comments c USING(review_id)`;
 
-  if (category) {
-    queryValues.push(category);
-    queryStr += ` WHERE r.category = $1`;
-  }
+      if (category) {
+        queryValues.push(category);
+        queryStr += ` WHERE r.category = $1`;
+      }
 
-  queryStr += ` GROUP BY r.review_id, r.title, r.owner,
+      queryStr += ` GROUP BY r.review_id, r.title, r.owner,
       r.category, r.review_img_url,
       r.created_at, r.votes, r.designer
       ORDER BY ${sort_by} ${order};
     `;
-  return db.query(queryStr, queryValues).then((result) => {
-    return result.rows;
-  });
+      return db.query(queryStr, queryValues);
+    })
+    .then((result) => {
+      return result.rows;
+    });
 };
 
 exports.selectReviewById = (review_id) => {

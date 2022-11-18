@@ -22,3 +22,15 @@ exports.checkUserExists = (username) => {
   });
 };
 
+exports.checkCategoryExists = (category) => {
+  if (category !== undefined) {
+    const queryStr = `SELECT * FROM categories WHERE slug = $1`;
+    return db.query(queryStr, [category]).then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, message: "category not found!" });
+      }
+    });
+  } else {
+    return Promise.resolve();
+  }
+};
