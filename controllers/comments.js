@@ -1,6 +1,7 @@
 const {
   selectCommentsByReviewId,
   createCommentByReviewId,
+  removeCommentById,
 } = require("../models/comments");
 
 exports.getCommentsByReviewId = (req, res, next) => {
@@ -19,6 +20,15 @@ exports.postCommentByReviewId = (req, res, next) => {
   createCommentByReviewId(review_id, newComment)
     .then((comment) => {
       return res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentById(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };

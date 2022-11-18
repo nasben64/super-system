@@ -3,6 +3,7 @@ const { getAllCategories } = require("./controllers/categories.js");
 const {
   getCommentsByReviewId,
   postCommentByReviewId,
+  deleteCommentById,
 } = require("./controllers/comments.js");
 const {
   getAllReviews,
@@ -32,6 +33,8 @@ app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.get("/api/users", getAllUsers);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // Error midleware functions
 

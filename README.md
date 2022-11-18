@@ -84,3 +84,7 @@ The end point should also accept the following queries:
 - `category`, which selects the reviews by the category value specified in the query. If the query is omitted the endpoint should respond with all reviews.
 - `sort_by`, which sorts the articles by any valid column (defaults to date)
 - `order`, which can be set to `asc` or `desc` for ascending or descending (defaults to descending)
+
+# 12) DELETE /api/comments/:comment_id
+
+This end point delete a comment by the comment_id

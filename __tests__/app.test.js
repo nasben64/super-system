@@ -475,4 +475,29 @@ describe("11. GET /api/reviews (queries)", () => {
         expect(res.body.reviews).toHaveLength(0);
       });
   });
+  test("404: returns category not found! message when called with a non-existent category query", () => {
+    return request(app)
+      .get("/api/reviews?category=banana")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("category not found!");
+      });
+  });
+});
+
+describe("12. DELETE /api/comments/:comment_id", () => {
+  test("DELETE:204 deletes the specified comment and sends no content back", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("DELETE - 400: returns error message when called with comment id of incorrect data type", () => {
+    return request(app).delete("/api/comments/abc").expect(400);
+  });
+  test("404: returns error message when called with valid but non-existent comment id", () => {
+    return request(app)
+      .delete("/api/comments/123")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("comment id does not exist!");
+      });
+  });
 });
