@@ -1,30 +1,28 @@
 const db = require("../db/connection");
-const { checkReviewExists, checkCategoryExists } = require("../utils/utils");
+const {
+  checkReviewExists,
+  checkCategoryExists,
+  isValidOrder,
+  isValidSoryBy,
+} = require("../utils/utils");
+const {
+  reviewNotExists,
+  incVoteUndefined,
+} = require("../error-handler/model-errors.js");
 
-exports.selectAllReviews = (
+exports.selectAllReviews = async (
   sort_by = "created_at",
   order = "DESC",
   category
 ) => {
-  const validColumns = [
-    "title",
-    "owner",
-    "category",
-    "created_at",
-    "votes",
-    "designer",
-  ];
-  if (!validColumns.includes(sort_by)) {
-    return Promise.reject({ status: 400, message: "invalid sort query!" });
-  }
+  await Promise.all([
+    isValidSoryBy(sort_by),
+    isValidOrder(order),
+    checkCategoryExists(category),
+  ]);
 
-  if (order !== "DESC" && order !== "ASC") {
-    return Promise.reject({ status: 400, message: "invalid order value!" });
-  }
-  return checkCategoryExists(category)
-    .then(() => {
-      const queryValues = [];
-      let queryStr = `
+  const queryValues = [];
+  let queryStr = `
       SELECT r.review_id, r.title, r.owner,
       r.category, r.review_img_url,
       r.created_at, r.votes, r.designer, 
@@ -32,24 +30,22 @@ exports.selectAllReviews = (
       FROM reviews r
       LEFT JOIN comments c USING(review_id)`;
 
-      if (category) {
-        queryValues.push(category);
-        queryStr += ` WHERE r.category = $1`;
-      }
+  if (category) {
+    queryValues.push(category);
+    queryStr += ` WHERE r.category = $1`;
+  }
 
-      queryStr += ` GROUP BY r.review_id, r.title, r.owner,
+  queryStr += ` GROUP BY r.review_id, r.title, r.owner,
       r.category, r.review_img_url,
       r.created_at, r.votes, r.designer
       ORDER BY ${sort_by} ${order};
     `;
-      return db.query(queryStr, queryValues);
-    })
-    .then((result) => {
-      return result.rows;
-    });
+  const result = await db.query(queryStr, queryValues);
+
+  return result.rows;
 };
 
-exports.selectReviewById = (review_id) => {
+exports.selectReviewById = async (review_id) => {
   const queryStr = `
     SELECT r.review_id, r.title, r.owner,
     r.category, r.review_img_url,
@@ -63,33 +59,24 @@ exports.selectReviewById = (review_id) => {
     r.category, r.review_img_url,
     r.created_at, r.votes, r.designer;
   `;
-  return db.query(queryStr, [review_id]).then((result) => {
-    if (result.rows.length === 0) {
-      return Promise.reject({
-        status: 404,
-        message: "review does not exist",
-      });
-    }
-    return result.rows;
-  });
+  const result = await db.query(queryStr, [review_id]);
+  if (result.rows.length === 0) {
+    await reviewNotExists();
+  }
+  return result.rows;
 };
 
-exports.updateReviewById = (review_id, newVote) => {
+exports.updateReviewById = async (review_id, newVote) => {
   if (newVote === undefined) {
-    return Promise.reject({
-      status: 400,
-      message: "inc_votes can not be undefined",
-    });
+    await incVoteUndefined();
   }
-  return checkReviewExists(review_id)
-    .then(() => {
-      const queryStr = `
+  await checkReviewExists(review_id);
+
+  const queryStr = `
         UPDATE reviews
         SET votes = votes + $1
         WHERE review_id = $2 RETURNING*;`;
-      return db.query(queryStr, [newVote, review_id]);
-    })
-    .then((result) => {
-      return result.rows;
-    });
+  const result = await db.query(queryStr, [newVote, review_id]);
+
+  return result.rows;
 };

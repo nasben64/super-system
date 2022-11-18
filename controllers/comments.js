@@ -4,31 +4,33 @@ const {
   removeCommentById,
 } = require("../models/comments");
 
-exports.getCommentsByReviewId = (req, res, next) => {
-  const { review_id } = req.params;
-
-  selectCommentsByReviewId(review_id)
-    .then((comments) => {
-      return res.status(200).send({ comments });
-    })
-    .catch(next);
+exports.getCommentsByReviewId = async (req, res, next) => {
+  try {
+    const { review_id } = req.params;
+    const comments = await selectCommentsByReviewId(review_id);
+    return res.status(200).send({ comments });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.postCommentByReviewId = (req, res, next) => {
-  const newComment = req.body;
-  const { review_id } = req.params;
-  createCommentByReviewId(review_id, newComment)
-    .then((comment) => {
-      return res.status(201).send({ comment });
-    })
-    .catch(next);
+exports.postCommentByReviewId = async (req, res, next) => {
+  try {
+    const newComment = req.body;
+    const { review_id } = req.params;
+    const comment = await createCommentByReviewId(review_id, newComment);
+    return res.status(201).send({ comment });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.deleteCommentById = (req, res, next) => {
-  const { comment_id } = req.params;
-  removeCommentById(comment_id)
-    .then(() => {
-      res.status(204).send();
-    })
-    .catch(next);
+exports.deleteCommentById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    await removeCommentById(comment_id);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 };

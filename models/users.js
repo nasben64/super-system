@@ -1,8 +1,7 @@
 const db = require("../db/connection");
 
-exports.selectAllUsers = () => {
+exports.selectAllUsers = async () => {
   const queryStr = "SELECT * FROM users;";
-  return db.query(queryStr).then((result) => {
-    return result.rows;
-  });
+  const result = await db.query(queryStr);
+  return result.rows;
 };
