@@ -20,6 +20,10 @@ const { getAllUsers } = require("./controllers/users.js");
 const app = express();
 app.use(express.json());
 
+app.get("/app/health", (req, res) => {
+  res.status(200).send({ msg: "server is up and running" });
+});
+
 app.get("/api/categories", getAllCategories);
 
 app.get("/api/reviews", getAllReviews);
