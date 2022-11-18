@@ -59,3 +59,20 @@ This end point inserts new comment to the comments table by passing an object wi
 - username which is the auther
 - body
   the response would be the newly added comment object
+
+# 8) PATCH /api/reviews/:review_id
+
+This end point updates the votes property by increasing or decresing it based on newVote value and for a particular
+review using the review_id, it should return the updated review.
+
+# 9) GET /api/users
+
+This end point will list you all of the users as an array of objects with the properies of
+
+- username
+- name
+- avatar_url
+
+# 10. GET /api/reviews/:review_id (comment count)
+
+this uses the same end point on ticket 5 but returns the comment_count property which is the total of the comments for the supplied review_id.

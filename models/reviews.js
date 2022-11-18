@@ -21,9 +21,17 @@ exports.selectAllReviews = () => {
 
 exports.selectReviewById = (review_id) => {
   const queryStr = `
-    SELECT * 
-    FROM reviews
-    WHERE review_id = $1
+    SELECT r.review_id, r.title, r.owner,
+    r.category, r.review_img_url,
+    r.created_at, r.votes, r.designer, 
+    r.review_body,
+    Count(c.review_id) AS comment_count
+    FROM reviews r
+    LEFT JOIN comments c USING(review_id)
+    WHERE r.review_id = $1
+    GROUP BY r.review_id, r.title, r.owner,
+    r.category, r.review_img_url,
+    r.created_at, r.votes, r.designer;
   `;
   return db.query(queryStr, [review_id]).then((result) => {
     if (result.rows.length === 0) {
