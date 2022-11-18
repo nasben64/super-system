@@ -60,7 +60,6 @@ describe("4. GET /api/reviews", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
-            comment_count: expect.any(String),
           });
         });
       });
@@ -370,8 +369,48 @@ describe("9. GET /api/users", () => {
       .get("/api/user")
       .expect(404)
       .then(({ body }) => {
-        console.log("inside the test", body);
         expect(body.msg).toBe("Path not found");
+      });
+  });
+});
+
+describe("10. GET /api/reviews/:review_id (comment count)", () => {
+  test("GET-200 returns a review object for the passed review_id and includes the coumment_count", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review[0]).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: "3",
+        });
+      });
+  });
+  test("GET-200 returns a review object for the passed review_id with comment_count of 0 when there is not comments", () => {
+    return request(app)
+      .get("/api/reviews/4")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review[0]).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: "0",
+        });
       });
   });
 });
