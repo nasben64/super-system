@@ -20,7 +20,7 @@ const { getAllUsers } = require("./controllers/users.js");
 const app = express();
 app.use(express.json());
 
-app.get("/app/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).send({ msg: "server is up and running" });
 });
 
