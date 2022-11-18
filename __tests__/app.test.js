@@ -394,4 +394,23 @@ describe("10. GET /api/reviews/:review_id (comment count)", () => {
         });
       });
   });
+  test("GET-200 returns a review object for the passed review_id with comment_count of 0 when there is not comments", () => {
+    return request(app)
+      .get("/api/reviews/4")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review[0]).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: "0",
+        });
+      });
+  });
 });
