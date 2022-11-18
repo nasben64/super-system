@@ -414,3 +414,65 @@ describe("10. GET /api/reviews/:review_id (comment count)", () => {
       });
   });
 });
+
+describe("11. GET /api/reviews (queries)", () => {
+  test("GET - 200 returns views object for the passed category.", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction")
+      .expect(200)
+      .then(({ body }) => {
+        body.reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            category: "social deduction",
+            review_img_url: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET - 200 returns views object sorted by the passed sort_by value", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=designer")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews[0].designer).toBe("Wolfgang Warsch");
+      });
+  });
+  test("GET - 200 returns views object sorted in ascending or descending order based on the order value passed", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=designer&order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews[0].designer).toBe("Akihisa Okui");
+      });
+  });
+  test("GET - 400 returns an error invalid sort query when passed invalid query value", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=nonsense")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid sort query!");
+      });
+  });
+  test("GET - 400 returns an error invalid order value when not passing ASC or DESC", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=designer&order=ABC")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid order value!");
+      });
+  });
+  test("200: returns an empty array when there are no reviews present for the queried category", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.reviews).toHaveLength(0);
+      });
+  });
+});
