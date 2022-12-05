@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { getAllCategories } = require("./controllers/categories.js");
 const {
   getCommentsByReviewId,
@@ -18,6 +19,8 @@ const {
 const { getAllUsers } = require("./controllers/users.js");
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
