@@ -17,6 +17,7 @@ const {
   catchAllErrors,
 } = require("./error-handler/app-errors");
 const { getAllUsers } = require("./controllers/users.js");
+const { postStripe } = require("./controllers/stripe.js");
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use(express.json());
 app.get("/api/health", (req, res) => {
   res.status(200).send({ msg: "server is up and running" });
 });
+
+app.post("/api/pay", postStripe);
 
 app.get("/api/categories", getAllCategories);
 
