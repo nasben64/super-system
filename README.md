@@ -88,3 +88,7 @@ The end point should also accept the following queries:
 # 12) DELETE /api/comments/:comment_id
 
 This end point delete a comment by the comment_id
+
+# 13) POST /api/pay
+
+This endpoint is used for stripe payment

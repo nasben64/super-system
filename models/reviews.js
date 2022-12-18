@@ -26,6 +26,7 @@ exports.selectAllReviews = async (
       SELECT r.review_id, r.title, r.owner,
       r.category, r.review_img_url,
       r.created_at, r.votes, r.designer, 
+      r.review_body,
       Count(c.review_id) AS comment_count
       FROM reviews r
       LEFT JOIN comments c USING(review_id)`;
@@ -40,6 +41,7 @@ exports.selectAllReviews = async (
       r.created_at, r.votes, r.designer
       ORDER BY ${sort_by} ${order};
     `;
+
   const result = await db.query(queryStr, queryValues);
 
   return result.rows;
